@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -23,30 +24,40 @@ public class EventParticipantServiceImpl implements EventParticipantService {
 
     @Override
     public void joinEvent(UUID eventId, UUID userId) {
+        EventParticipantId id = new EventParticipantId(eventId, userId);
+
+        if (repo.existsById(id)) {
+            throw new IllegalStateException("User already joined this event.");
+        }
+
         EventParticipant ep = new EventParticipant();
         ep.setEventId(eventId);
         ep.setUserId(userId);
         ep.setJoinedAt(LocalDateTime.now());
+
         repo.save(ep);
     }
 
     @Override
     public void leaveEvent(UUID eventId, UUID userId) {
-        repo.deleteById(new EventParticipantId(eventId, userId));
+        EventParticipantId id = new EventParticipantId(eventId, userId);
+        if (!repo.existsById(id)) {
+            throw new NoSuchElementException("User is not participating in this event.");
+        }
+
+        repo.deleteById(id);
     }
 
     @Override
     public List<UUID> getUserEvents(UUID userId) {
-        return repo.findByUserId(userId)
-                .stream()
+        return repo.findByUserId(userId).stream()
                 .map(EventParticipant::getEventId)
                 .toList();
     }
 
     @Override
     public List<UUID> getEventParticipants(UUID eventId) {
-        return repo.findByEventId(eventId)
-                .stream()
+        return repo.findByEventId(eventId).stream()
                 .map(EventParticipant::getUserId)
                 .toList();
     }
