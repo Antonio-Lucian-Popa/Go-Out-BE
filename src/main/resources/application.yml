@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: goout-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gooutdb
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # pentru dezvoltare; în produc?ie folose?te 'validate' sau 'none'
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    open-in-view: false
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  # Active profile (pentru a-l extinde pe viitor cu "prod", "test" etc.)
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+# CORS global (pentru a permite accesul frontend-ului)
+# Alternativ, po?i configura CORS în WebConfig.java
+cors:
+  allowed-origins: "*"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
