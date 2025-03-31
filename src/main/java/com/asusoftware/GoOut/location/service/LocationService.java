@@ -15,5 +15,7 @@ public interface LocationService {
     List<LocationDto> findByType(String type);
     List<LocationDto> findNearby(double latitude, double longitude, double radiusKm);
     List<LocationDto> getLocationsByOwner(UUID ownerUserId);
+    List<LocationDto> findWithinBounds(double north, double south, double east, double west);
+
 }
 

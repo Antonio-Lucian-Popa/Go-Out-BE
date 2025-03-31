@@ -44,6 +44,18 @@ public class LocationController {
         return ResponseEntity.ok(locationService.getLocationsByOwner(currentUserId));
     }
 
+    @GetMapping("/bounds")
+    public ResponseEntity<List<LocationDto>> getLocationsByBounds(
+            @RequestParam double north,
+            @RequestParam double south,
+            @RequestParam double east,
+            @RequestParam double west
+    ) {
+        List<LocationDto> locations = locationService.findWithinBounds(north, south, east, west);
+        return ResponseEntity.ok(locations);
+    }
+
+
     // Șterge locație dacă aparține userului
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id, @RequestHeader("X-USER-ID") UUID currentUserId) {

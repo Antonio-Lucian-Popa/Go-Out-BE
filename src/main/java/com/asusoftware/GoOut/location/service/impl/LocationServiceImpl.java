@@ -53,6 +53,15 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    public List<LocationDto> findWithinBounds(double north, double south, double east, double west) {
+        List<Location> locations = repo.findWithinBounds(north, south, east, west);
+        return locations.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+
+    @Override
     public void delete(UUID id, UUID currentUserId) {
         Location loc = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Locație inexistentă"));
